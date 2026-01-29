@@ -1,0 +1,8 @@
+datasets:
+  - name: "reddit"
+    bucket: "s3://contrastive/reddit_triples/shard-{00000..00001}.jsonl.gz"
+    query_only: true
+    query_prefix: "clustering"
+    objective: 
+      type: "triplet"
+      columns: ["query", "document", "negatives"]

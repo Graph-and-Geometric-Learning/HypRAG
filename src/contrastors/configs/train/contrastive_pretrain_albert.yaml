@@ -1,0 +1,63 @@
+train_args:
+  trainer_type: "hyp_encoder"
+  num_epochs: 1 
+  learning_rate: 2.0e-4
+  weight_decay: 0.2
+  warmup_steps: 700
+  cooldown_steps: null
+  checkpoint: null
+  wandb: true
+  wandb_run_name: "contrastive-pretrain-elbert"
+  wandb_project_name: "hrag"
+  wandb_entity: "gpt4all"
+  log_grads_every: 100
+  log_lr_every: 10
+  save_every: 3000
+  chunk_size: 128
+  output_dir: "ckpts/contrastive-pretrain-elbert"
+  # if using deepspeed, this will be ignored
+  schedule_type: "cosine"
+  max_grad_norm: 1.0
+  adam_beta1: 0.9
+  adam_beta2: 0.999
+  grad_cache: true
+  loss_fn: "clip"
+  use_fp8: false
+  clamp_logits: false
+  logit_max: 100
+  distance: 'lorentz_inner'
+  eval_strategy: "steps"
+  eval_steps: 3000
+
+model_args:
+  model_type: "albert"
+  seq_len: 2048
+  use_rotary_embeddings: true
+  hidden_size: 756
+  tokenizer_name: "bert-base-uncased"
+  model_name: "bert-base-uncased"
+  curvature_init: 1.0
+  trainable_curvature: false
+  norm_layer: "rms_norm"
+  activation_function: "swiglu"
+  tie_word_embeddings: true
+  gradient_checkpointing: false 
+  attn_implementation: "flash_attention_2"
+  pretrained: true
+  logit_scale: 50
+  trainable_logit_scale: false
+  pooling: "cls"
+  add_eos: false
+  add_prefix: true
+  seq_len: 256
+  document_max_length: 256
+  query_max_length: 128
+
+data_args:
+  input_shards: "configs/data/mosaic_pretrain_pairs.yaml"
+  workers: 4
+  batch_size: 16384
+  seed: 42
+  streaming: 'mosaicml' # null, 'hf_streaming' or 'mosaicml_streaming'
+  shuffle: true
+  download: true

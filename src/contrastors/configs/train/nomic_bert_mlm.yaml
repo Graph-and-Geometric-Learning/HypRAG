@@ -1,0 +1,59 @@
+train_args:
+  trainer_type: "mlm"
+  num_epochs: 160
+  learning_rate: 5.0e-4
+  adam_beta1: 0.9
+  adam_beta2: 0.98
+  weight_decay: 1.0e-5
+  eps: 1.0e-6
+  max_grad_norm: 0.0
+  schedule_type: "linear"
+  gradient_accumulation_steps: 21
+  dtype: "bf16"
+
+  warmup_steps: null
+  warmup_pct: 0.06
+  cooldown_steps: null
+  checkpoint: null
+
+  wandb: true
+  wandb_project_name: "hrag"
+  wandb_run_name: "mlm_nomic_small_model_12_layers"
+  wandb_mode: "online"
+
+  log_grads_every: 100
+  log_lr_every: 10
+  save_every: 30000
+  eval_every: null
+  eval_strategy: "epochs"
+  output_dir: "ckpts/mlm_nomic_small_model_12_layers"
+  # if using deepspeed, this will be ignored
+  pretrained: null
+  pooling: "last"
+  use_fp8: false
+
+model_args:
+  model_type: "nomic_bert"
+  seq_len: 2048
+  rotary_emb_fraction: 1.0
+  rotary_emb_base: 10000
+  pad_vocab_to_multiple_of: 64 
+  use_rms_norm: false
+  activation_function: "swiglu"
+  tokenizer_name: "answerdotai/ModernBERT-base"
+  model_name: "answerdotai/ModernBERT-base"
+  qkv_proj_bias: false
+  mlp_fc1_bias: false
+  mlp_fc2_bias: false
+  attn_pdrop: 0.0
+  gradient_checkpointing: true
+
+data_args:
+  tokenized_dataset: "nomic-ai/bert-pretokenized-2048-wiki-2023"
+  workers: 8
+  batch_size: 48
+  seed: 42
+  shuffle: true
+  mlm_prob: 0.30
+  val_mlm_prob: 0.15
+  val_pct: 0.01

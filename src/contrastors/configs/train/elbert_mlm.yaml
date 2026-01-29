@@ -1,0 +1,58 @@
+train_args:
+  trainer_type: "mlm"
+  num_epochs: 160
+  learning_rate: 5.0e-4
+  adam_beta1: 0.9
+  adam_beta2: 0.98
+  weight_decay: 1.0e-5
+  eps: 1.0e-6
+  max_grad_norm: 0.0
+  schedule_type: "linear"
+  gradient_accumulation_steps: 8
+
+  warmup_steps: null
+  warmup_pct: 0.06
+  cooldown_steps: null
+  checkpoint: null
+
+  wandb: true
+  wandb_project_name: "hrag"
+  wandb_run_name: "elbert_mlm_rotary-500k"
+  wandb_mode: "online"
+
+  log_grads_every: 100
+  log_lr_every: 10
+  save_every: 30000
+  eval_every: null
+  eval_strategy: "epochs"
+  output_dir: "ckpts/fix-rotary-base"
+  # if using deepspeed, this will be ignored
+  pretrained: null
+  pooling: "last"
+  use_fp8: false
+
+model_args:
+  model_type: "elbert_pretraining"
+  tokenizer_name: "answerdotai/ModernBERT-base"
+  model_name: "answerdotai/ModernBERT-base"
+  pretrained: false
+  curvature_init: 1.0
+  trainable_curvature: false
+  logit_scale: 50
+  trainable_logit_scale: false
+  add_eos: false
+  add_prefix: true
+  trainable_norm_scaler: false
+  norm_clip_factor: 10.0
+  seq_len: 2048
+  tie_word_embeddings: false
+
+data_args:
+  tokenized_dataset: "nomic-ai/bert-pretokenized-2048-wiki-2023"
+  workers: 8
+  batch_size: 64
+  seed: 42
+  shuffle: true
+  mlm_prob: 0.30
+  val_mlm_prob: 0.15
+  val_pct: 0.01

@@ -1,0 +1,61 @@
+train_args:
+  trainer_type: "hyp_encoder"
+  num_epochs: 1 
+  learning_rate: 2.0e-4
+  weight_decay: 0.2
+  warmup_steps: 700
+  cooldown_steps: null
+  checkpoint: null
+  wandb: true
+  wandb_run_name: "contrastive-pretrain-elbert"
+  wandb_project_name: "hrag"
+  wandb_entity: "gpt4all"
+  log_grads_every: 100
+  log_lr_every: 10
+  save_every: 3000
+  chunk_size: 256
+  output_dir: "ckpts/contrastive-pretrain-elbert"
+  # if using deepspeed, this will be ignored
+  schedule_type: "cosine"
+  max_grad_norm: 1.0
+  adam_beta1: 0.9
+  adam_beta2: 0.999
+  grad_cache: true
+  loss_fn: "clip"
+  use_fp8: false
+  clamp_logits: false
+  logit_max: 100
+  distance: 'lorentz_inner'
+  eval_strategy: "steps"
+  eval_steps: 3000
+
+model_args:
+  model_type: "elbert"
+  tokenizer_name: "answerdotai/ModernBERT-base"
+  model_name: "answerdotai/ModernBERT-base"
+  pretrained: true
+  curvature_init: 1.0
+  trainable_curvature: false
+  logit_scale: 50
+  trainable_logit_scale: false
+  num_hyperbolic_blocks: 3
+  pooling: "hyp_cls"
+  add_eos: false
+  add_prefix: true
+  seq_len: 256
+  document_max_length: 256
+  query_max_length: 128
+  trainable_norm_scaler: false
+  norm_clip_factor: 10.0
+  gradient_checkpointing: false
+
+data_args:
+  input_shards: "configs/data/hf_pretrain_pairs.yaml"
+  workers: 4
+  batch_size: 16384
+  seed: 42
+  streaming: true
+  shuffle: true
+  download: true
+  query_max_length: 128
+  document_max_length: 256

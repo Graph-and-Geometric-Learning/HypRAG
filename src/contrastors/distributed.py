@@ -1,0 +1,108 @@
+import torch
+import torch.distributed.nn
+import torch.distributed as dist
+
+def gather_with_grad(t):
+    if not dist.is_initialized() or dist.get_world_size() == 1:
+        return t
+
+    if t.ndim == 0:
+        t = t.unsqueeze(0)
+
+    return torch.cat(torch.distributed.nn.all_gather(t), dim=0)
+
+
+def gather_all_features(
+        image_features,
+        text_features,
+        local_loss=False,
+        gather_with_grad=False,
+        rank=0,
+        world_size=1,
+):
+    # We gather tensors from all gpus
+    if gather_with_grad:
+        all_image_features = torch.cat(torch.distributed.nn.all_gather(image_features), dim=0)
+        all_text_features = torch.cat(torch.distributed.nn.all_gather(text_features), dim=0)
+    else:
+        gathered_image_features = [torch.zeros_like(image_features) for _ in range(world_size)]
+        gathered_text_features = [torch.zeros_like(text_features) for _ in range(world_size)]
+        dist.all_gather(gathered_image_features, image_features)
+        dist.all_gather(gathered_text_features, text_features)
+        if not local_loss:
+            # ensure grads for local rank when all_* features don't have a gradient
+            gathered_image_features[rank] = image_features
+            gathered_text_features[rank] = text_features
+        all_image_features = torch.cat(gathered_image_features, dim=0)
+        all_text_features = torch.cat(gathered_text_features, dim=0)
+
+    return all_image_features, all_text_features
+
+
+def gather(t):
+    # torch.distributed.nn.all_gather scales by world size since the reduce op is SUM
+    # https://github.com/pytorch/pytorch/issues/58005
+    # only should use torch.distributed.nn.all_gather if we implement a `local_loss`
+    # like: https://github.com/mlfoundations/open_clip/issues/616
+    if not dist.is_initialized() or dist.get_world_size() == 1:
+        return t
+
+    if t.ndim == 0:
+        t = t.unsqueeze(0)
+
+    gathered = [torch.empty_like(t) for _ in range(dist.get_world_size())]
+    dist.all_gather(gathered, t)
+    gathered[dist.get_rank()] = t
+    return torch.cat(gathered, dim=0)
+
+
+def gather_dict(d):
+    # gathers a dict of tensors
+    gathered = {}
+    for k, v in d.items():
+        gathered[k] = gather(v)
+    return gathered
+
+
+def all_gather_object(obj):
+    # gather a pickle-able python object across all ranks
+    objects = [None for _ in range(dist.get_world_size())]
+    dist.all_gather_object(objects, obj)
+
+    flattened_objects = []
+    for obj in objects:
+        if isinstance(obj, list):
+            flattened_objects.extend(obj)
+        else:
+            flattened_objects.append(obj)
+
+    return flattened_objects
+
+
+def print_rank_zero(msg):
+    if dist.is_initialized():
+        if dist.get_rank() == 0:
+            print(msg)
+
+
+def print_in_order(msg):
+    if dist.is_initialized():
+        for i in range(dist.get_world_size()):
+            if i == dist.get_rank():
+                print(msg)
+            dist.barrier()
+    else:
+        print(msg)
+
+
+class DistributedWandbTracker:
+    def __init__(self, tracker):
+        self.tracker = tracker
+
+    def log(self, metrics, **kwargs):
+        if dist.get_rank() == 0:
+            self.tracker.log(metrics, **kwargs)
+
+    def watch(self, model, log="all", log_freq=5000):
+        if dist.get_rank() == 0:
+            self.tracker.watch(model, log=log, log_freq=log_freq)

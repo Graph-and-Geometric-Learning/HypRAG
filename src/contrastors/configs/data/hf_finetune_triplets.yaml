@@ -1,0 +1,155 @@
+dataset_name: nomic-ai/nomic-embed-v2-supervised-data
+default_query_prefix: "search_query"
+default_document_prefix: "search_document"
+default_negative_prefix: "search_document"
+
+objective: 
+  type: "triplet"
+  columns: ["query", "pos", "neg"]
+splits:
+  - name: "msmarco"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "nq"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "hotpot"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "fever"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "stack"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "squad"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "miracl_ar"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "miracl_bn"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "miracl_en"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "miracl_es"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "miracl_fi"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "miracl_fr"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "miracl_hi"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "miracl_id"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "miracl_ja"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "miracl_ko"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "miracl_ru"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "miracl_sw"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "miracl_te"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "miracl_th"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]
+
+  - name: "miracl_zh"
+    query_prefix: "search_query"
+    document_prefix: "search_document"
+    objective: 
+      type: "triplet"
+      columns: ["query", "pos", "neg"]

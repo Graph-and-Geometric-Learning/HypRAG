@@ -1,0 +1,63 @@
+train_args:
+  trainer_type: "hyp_encoder"
+  num_epochs: 1 
+  learning_rate: 2.0e-5
+  weight_decay: 0.01
+  warmup_steps: 400
+  checkpoint: null
+  wandb: false
+  wandb_project_name: "hrag"
+  wandb_entity: null
+  log_grads_every: 100
+  log_lr_every: 10
+  save_every: 4500 
+  chunk_size: 128
+  output_dir: "ckpts/elbert-embed-text-full-matryoshka"
+  # if using deepspeed, this will be ignored
+  schedule_type: "linear"
+  max_grad_norm: 1.0
+  adam_beta1: 0.9
+  adam_beta2: 0.999
+  grad_cache: true
+  loss_fn: "clip"
+  use_fp8: false
+  clamp_logits: false
+  logit_max: 100
+  # matryoshka_dims: [256, 768]
+  # matryoshka_loss_weights: [1, 1]
+  eval_strategy: "steps"
+  eval_steps: 3000
+  distance: 'geodesic'
+
+
+model_args:
+  model_type: "elbert"
+  tokenizer_name: "nomic-ai/modern-nomic-embed-unsup"
+  model_name: "nomic-ai/modern-nomic-embed-unsup"
+  pretrained: true
+  curvature_init: 1.0
+  trainable_curvature: false
+  logit_scale: 50
+  trainable_logit_scale: false
+  pooling: "euc_mean"
+  add_eos: false
+  add_prefix: true
+  add_projection: true
+  seq_len: 512
+  trainable_norm_scaler: false
+  norm_clip_factor: 2.0
+  num_negatives: 7 
+  gradient_checkpointing: false
+
+
+data_args:
+  input_shards: "configs/data/hf_finetune_triplets.yaml"
+  workers: 8
+  batch_size: 256
+  seed: 42
+  shuffle: false
+  download: true
+  streaming: false
+  weighted_sampling: false
+  verbose: true
+  sample_negatives: false

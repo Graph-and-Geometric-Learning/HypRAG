@@ -1,0 +1,9 @@
+datasets:
+  - name: "reddit_title_body"
+    bucket: "s3://contrastive-index-filtered/reddit_full/shard-{00000..00666}.jsonl.gz"
+    
+    query_prefix: "clustering"
+    document_prefix: "clustering"
+    objective:
+      type: "paired"
+      columns: ["title", "body"]
